@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: archive-argo-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/anusree-bejugam/test-argocd.git
+    targetRevision: HEAD
+    path: configs
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: archive-service
+
+  syncPolicy:
+    automated:  # enable auto-sync
+      prune: true  # allow deletion of resources
+      selfHeal: true  # allow auto-correction of out-of-sync resources
+    syncOptions:
+      - CreateNamespace=true  # create namespace if it doesn't exist

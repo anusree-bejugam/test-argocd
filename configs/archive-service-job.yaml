@@ -1,32 +1,29 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Job
 metadata:
-  name: archive-service
+  name: archive-service-job
   labels:
     app: archive-service
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: archive-service
+  backoffLimit: 1                   
   template:
     metadata:
       labels:
         app: archive-service
     spec:
+      restartPolicy: Never          # pods are not restarted after completion
       containers:
         - name: archive-service
           image: archive-service:0.1
           imagePullPolicy: IfNotPresent
           env:
             - name: ES_HOST
-              value: "elasticsearch"
+              value: "elasticsearch"   
             - name: ES_PORT
               value: "9200"
           volumeMounts:
             - name: archive-logs
               mountPath: /app/logs
-      restartPolicy: Always
       volumes:
         - name: archive-logs
           emptyDir: {}
